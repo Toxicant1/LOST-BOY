@@ -1,0 +1,31 @@
+// commands/downloader/ytmp3.js const ytdl = require('ytdl-core'); const fs = require('fs'); const { exec } = require('child_process');
+
+module.exports = { name: "ytmp3", description: "Download YouTube audio", category: "downloader", run: async ({ sock, m, args }) => { const url = args[0]; if (!url || !ytdl.validateURL(url)) { return sock.sendMessage(m.chat, { text: "📎 Provide a valid YouTube link." }); }
+
+const info = await ytdl.getInfo(url);
+const title = info.videoDetails.title;
+const fileName = `${title.replace(/[^a-zA-Z0-9]/g, '_')}.mp3`;
+
+const stream = ytdl(url, { filter: 'audioonly' });
+const output = `./temp/${fileName}`;
+
+const proc = exec(`ffmpeg -i pipe:0 -b:a 192K -vn "${output}"`, (err) => {
+  if (err) return sock.sendMessage(m.chat, { text: "❌ Error downloading audio." });
+
+  sock.sendMessage(m.chat, {
+    audio: fs.readFileSync(output),
+    mimetype: 'audio/mp4',
+    fileName: fileName
+  });
+
+  fs.unlinkSync(output);
+});
+
+stream.pipe(proc.stdin);
+
+} };
+
+// More modules will be added below as separate exports
+
+// Example: commands/downloader/tiktok.js // Example: commands/downloader/twitter.js // Example: commands/downloader/fbdl.js // Example: commands/downloader/play.js // Example: commands/downloader/ytmp4.js // Example: commands/downloader/song2.js // Example: commands/downloader/lyrics.js // Example: commands/downloader/insta.js // Example: commands/downloader/movie.js // Example: commands/downloader/yts.js // Example: commands/downloader/pinterest.js // Example: commands/downloader/play2.js
+
