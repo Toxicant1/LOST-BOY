@@ -22,7 +22,10 @@ const _ = require('lodash')
 const moment = require('moment-timezone')
 const { exec } = require('child_process')
 const PhoneNumber = require('awesome-phonenumber')
-const { version, isLatest } = require('./lib/update')
+
+// 🔥 Removed line below to prevent crash
+// const { version, isLatest } = require('./lib/update')
+
 const { color } = require('./lib/color')
 const { banner } = require('./lib/banner')
 const { serialize, sleep, smsg } = require('./lib/myfunc')
