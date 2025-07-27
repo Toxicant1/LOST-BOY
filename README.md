@@ -3,7 +3,7 @@
   <img src="https://i.imgur.com/dBaSKWF.gif" height="40" width="100%">
 </p>
 <div align="center">
-<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Black+Ops+One&size=50&pause=1000&color=1BAFBAFF&center=true&width=910&height=100&lines=HI+THIS+IS+LostBoy;A+MULTI+DEVICE+WHATSAPP+BOT;SCRIPTED+BY+%F0%9D%97%B2%F0%9D%98%82%F0%9D%97%BB%F0%9D%98%80%F0%9D%97%B6%F0%9D%97%B6%F0%9D%97%BF+%F0%9D%97%B2%F0%9D%97%B6%F0%9D%97%B7%F0%9D%97%BF%F0%9D%97%B3%F0%9D%97%B6%F0%9D%97%BA;STAR+AND+FORK+OUR+REPO" alt="Typing SVG" /></a>
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Black+Ops+One&size=50&pause=1000&color=1BAFBAFF&center=true&width=910&height=100&lines=HI+THIS+IS+LostBoy;A+MULTI+DEVICE+WHATSAPP+BOT;SCRIPTED+BY+ISHAQ IBRAHIM;STAR+AND+FORK+OUR+REPO" alt="Typing SVG" /></a>
   </p>
 
 <p align="center">
