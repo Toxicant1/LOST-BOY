@@ -1,4 +1,4 @@
-# 🤖 LostBoy 𝐁𝐎𝐓
+# <p align="center"> <a href="https://github.com/Toxicant1/LOST-BOY.git"><img src="https://readme-typing-svg.demolab.com?font=Black+Ops+One&size=60&pause=1000&color=d1fa02&center=true&vCenter=true&multiline=false&width=910&height=100&lines=LOSTBOY+%F0%9F%A5%BA%F0%9F%8D%80" alt="LostBoy Typing SVG" /></a> </p>
 <p align="center">
   <img src="https://i.imgur.com/dBaSKWF.gif" height="40" width="100%">
 </p>
@@ -21,7 +21,7 @@
 [![Owner Profile](https://raw.githubusercontent.com/Toxicant1/LOST-BOY/main/Media/LOST-BOY.jpg)](https://github.com/Toxicant1)
 </p>
 <p align="center">
-  <a href="#"><img src="http://readme-typing-svg.herokuapp.com?color=d1fa02&center=true&vCenter=true&multiline=false&lines=LostBoy" alt="">
+  <a href="#"><img src="https://readme-typing-svg.herokuapp.com?font=Press+Start+2P&size=35&pause=1000&color=d1fa02&center=true&vCenter=true&multiline=false&lines=%E2%9C%A8+L%20O%20S%20T%20B%20O%20Y+%E2%9C%A8" alt="LostBoy Typing SVG">
 </p>
 <p align="center">
 <a href="#"><img title="Creator" src="https://img.shields.io/badge/Creator- %F0%9D%97%B2%F0%9D%98%82%F0%9D%97%BB%F0%9D%98%80%F0%9D%97%B6%F0%9D%97%B6%F0%9D%97%BF+%F0%9D%97%B2%F0%9D%97%B6%F0%9D%97%B7%F0%9D%97%BF%F0%9D%97%B3%F0%9D%97%B6%F0%9D%97%BA-blue.svg?style=for-the-badge&logo=github"></a>
@@ -103,7 +103,7 @@ Linking/Pairing:
 <p align="center">
   <img src="https://i.imgur.com/dBaSKWF.gif" height="40" width="100%">
 </p> 
-  <h1 align="center">𝐂𝐑𝐄𝐃𝐈𝐓𝐒 𝐓𝐎 𝐍𝐈𝐂𝐊 𝐇𝐔𝐍𝐓𝐄𝐑 𝐅𝐎𝐑 𝐓𝐇𝐄 𝐁𝐀𝐒𝐄</h1>
+  <h1 align="center">𝐂𝐑𝐄𝐃𝐈𝐓𝐒 𝐓𝐎 𝑰𝒔𝒉𝒂𝒒 𝑰𝒃𝒓𝒂𝒉𝒊𝒎 𝐅𝐎𝐑 𝐓𝐇𝐄 𝐁𝐀𝐒𝐄</h1>
   </a>
   <p align="center">
   <img src="https://i.imgur.com/dBaSKWF.gif" height="40" width="100%">
