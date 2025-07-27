@@ -1,13 +1,13 @@
 /* If it works, don't  Fix it */
 const {
-default: ravenConnect,
-useMultiFileAuthState,
-DisconnectReason,
-fetchLatestBaileysVersion,
-downloadContentFromMessage,
-jidDecode,
-proto,
-getContentType,
+  default: ravenConnect,
+  useMultiFileAuthState,
+  DisconnectReason,
+  fetchLatestBaileysVersion,
+  downloadContentFromMessage,
+  jidDecode,
+  proto,
+  getContentType,
 } = require("@whiskeysockets/baileys");
 
 const pino = require("pino");
@@ -21,30 +21,29 @@ const FileType = require("file-type");
 const figlet = require("figlet");
 const { File } = require('megajs');
 const app = express();
-const _ = require("lodash"); // Imported but not explicitly used in this snippet
+const _ = require("lodash");
 let lastTextTime = 0;
 const messageDelay = 5000;
 const Events = require('./action/events');
 const logger = pino({ level: 'silent' });
-//const authentication = require('./action/auth'); // Commented out
+//const authentication = require('./action/auth');
 const PhoneNumber = require("awesome-phonenumber");
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/ravenexif');
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/ravenfunc');
-// UPDATED IMPORT: Including all necessary variables from set.js
-const { sessionName, session, mode, prefix, autobio, autolike, port, mycode, anticall, antiforeign, packname, autoviewstatus, botname, ownername, ownernumber, lostBoyQuotes, statusEmojis } = require("./set.js"); // <--- CONFIRMED IMPORTS
-const makeInMemoryStore = require('./store/store.js');
+// UPDATED IMPORT: Including botname, ownername, ownernumber, lostBoyQuotes, and statusEmojis from set.js
+const { sessionName, session, mode, prefix, autobio, autolike, port, mycode, anticall, antiforeign, packname, autoviewstatus, botname, ownername, ownernumber, lostBoyQuotes, statusEmojis } = require("./set.js"); // <--- MODIFIED
+const makeInMemoryStore = require('./store/store.js'); 
 const store = makeInMemoryStore({ logger: logger.child({ stream: 'store' }) });
-//const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) }); // Commented out
+//const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 const color = (text, color) => {
-return !color ? chalk.green(text) : chalk.keyword(color)(text);
+  return !color ? chalk.green(text) : chalk.keyword(color)(text);
 };
 
 async function authentication() {
-if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
-if(!session) return console.log('Please add your session to SESSION env !!')
+  if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
+    if(!session) return console.log('Please add your session to SESSION env !!')
 const sessdata = session.replace("BLACK MD;;;", '');
-const filer = await File.fromURL(`https://mega.nz/file/${sessdata}`);
-
+const filer = await File.fromURL(`https://mega.nz/file/${sessdata}`)
 filer.download((err, data) => {
 if(err) throw err
 fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
@@ -54,380 +53,379 @@ console.log("Connecting to WhatsApp ⏳️, Hold on for 3 minutes⌚️")
 }
 
 async function startRaven() {
-await authentication();
-const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/sessions/');
-const { version, isLatest } = await fetchLatestBaileysVersion();
-console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
-console.log(
-color(
-figlet.textSync("BLACK-MD", { // This "BLACK-MD" is from figlet font, changing it here won't change the ASCII art
-font: "Standard",
-horizontalLayout: "default",
-vertivalLayout: "default",
-whitespaceBreak: false,
-}),
-"green"
-)
-);
+       await authentication();  
+  const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/sessions/');
+  const { version, isLatest } = await fetchLatestBaileysVersion();
+  console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
+  console.log(
+    color(
+      // MODIFIED: Use botname from set.js for figlet text
+      figlet.textSync(botname, { // <--- MODIFIED
+        font: "Standard",
+        horizontalLayout: "default",
+        vertivalLayout: "default",
+        whitespaceBreak: false,
+      }),
+      "green"
+    )
+  );
 
-const client = ravenConnect({
-logger: pino({ level: "silent" }),
-printQRInTerminal: false,
-// UPDATED: Using botname for browser identification
-browser: [botname, "Safari", "5.1.7"],
-auth: state,
-syncFullHistory: true,
-});
+  const client = ravenConnect({
+    logger: pino({ level: "silent" }),
+    printQRInTerminal: false,
+    // MODIFIED: Use botname from set.js for browser identification
+    browser: [botname, "Safari", "5.1.7"], // <--- MODIFIED
+    auth: state,
+    syncFullHistory: true,
+  });
 
 store.bind(client.ev);
-
+  
 client.ev.on('connection.update', (update) => {
-const { connection, lastDisconnect } = update
-if (connection === 'close') {
-if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
+    const { connection, lastDisconnect } = update
+  if (connection === 'close') {
+  if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
 startRaven()
-}
-} else if (connection === 'open') {
-// UPDATED: Connection messages to include botname and ownername
-console.log(color(`Congrats, ${botname} has successfully connected to this server`, "green"));
-console.log(color(`Follow ${ownername} on github as Blackie254`, "red"));
-console.log(color("Text the bot number with menu to check my command list"));
-// client.groupAcceptInvite('Fz3MiSzP8E3C1Q4Yf5thlw'); // This line was commented out in your original code. Uncomment if needed.
-const Texxt = `✅ 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 » »【${botname}】\n+👥 𝗠𝗼𝗱𝗲 »» ${mode}\n+👤 𝗣𝗿𝗲𝗳𝗶𝘅 »» ${prefix}\n+👤 𝗢𝘄𝗻𝗲𝗿 »» ${ownername}`; // Added owner
-client.sendMessage(client.user.id, { text: Texxt });
-}
-});
+  }
+  } else if (connection === 'open') {
+      // MODIFIED: Connection messages to include botname and ownername
+      console.log(color(`Congrats, ${botname} has successfully connected to this server`, "green")); // <--- MODIFIED
+      console.log(color(`Follow ${ownername} on github as Blackie254`, "red")); // <--- MODIFIED
+      console.log(color("Text the bot number with menu to check my command list"));
+      client.groupAcceptInvite('Fz3MiSzP8E3C1Q4Yf5thlw');
+      const Texxt = `✅ 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 » »【${botname}】\n`+`👥 𝗠𝗼𝗱𝗲 »» ${mode}\n`+`👤 𝗣𝗿𝗲𝗳𝗶𝘅 »» ${prefix}\n`+`👤 𝗢𝘄𝗻𝗲𝗿 »» ${ownername}` // <--- MODIFIED
+      client.sendMessage(client.user.id, { text: Texxt });
+    }
+  });
+  
+    client.ev.on("creds.update", saveCreds);
+  
+  // RE-IMPLEMENTED AUTOBIO LOGIC (Daily rotating quotes + weekend message)
+  if (autobio === 'TRUE') {
+    setInterval(() => {
+      const date = new Date();
+      const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+      const timeZone = 'Africa/Nairobi'; // Keep your specified timezone
 
-client.ev.on("creds.update", saveCreds);
+      let statusText;
 
-// UPDATED AUTOBIO LOGIC (Daily rotating quotes + weekend message)
-if (autobio === 'TRUE') {
-setInterval(() => {
-const date = new Date();
-const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-const timeZone = 'Africa/Nairobi'; // Consistent timezone
+      // Check if it's Saturday (6) or Sunday (0)
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+          statusText = "It's time to rest";
+      } else {
+          // Logic for weekdays (Monday-Friday)
+          const options = {
+              timeZone: timeZone,
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit', // Add seconds
+              hour12: false // 24-hour format for clarity
+          };
+          const currentTime = date.toLocaleString('en-US', options);
+          const currentWeekday = date.toLocaleString('en-US', { weekday: 'long', timeZone: timeZone});
 
-let statusText;
+          // Determine which quote to use based on the day of the month
+          const dayOfMonth = date.getDate();
+          const quoteIndex = (dayOfMonth - 1) % lostBoyQuotes.length; // Ensure it cycles through your quotes
+          const selectedQuote = lostBoyQuotes[quoteIndex];
 
-// Check if it's Saturday (6) or Sunday (0)
-if (dayOfWeek === 0 || dayOfWeek === 6) {
-    statusText = "It's time to rest";
-} else {
-    // Logic for weekdays (Monday-Friday)
-    const options = {
-        timeZone: timeZone,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit', // Add seconds
-        hour12: false // 24-hour format for clarity
-    };
-    const currentTime = date.toLocaleString('en-US', options);
-    const currentWeekday = date.toLocaleString('en-US', { weekday: 'long', timeZone: timeZone});
+          // Construct the full status message
+          statusText = `${botname}\n"${selectedQuote}"\n${currentTime} | It's a ${currentWeekday}.`;
+      }
 
-    // Determine which quote to use based on the day of the month
-    // Ensure lostBoyQuotes is properly defined and imported from set.js
-    const dayOfMonth = date.getDate();
-    const quoteIndex = (dayOfMonth - 1) % lostBoyQuotes.length; // Ensure it cycles through your quotes
-    const selectedQuote = lostBoyQuotes[quoteIndex];
+      client.updateProfileStatus(statusText);
+    }, 10 * 1000); // Updates every 10 seconds
+  }
 
-    // Construct the full status message
-    statusText = `${botname}\n"${selectedQuote}"\n${currentTime} | It's a ${currentWeekday}.`;
-}
 
-client.updateProfileStatus(statusText);
-}, 10 * 1000); // Updates every 10 seconds
-}
+  client.ev.on("messages.upsert", async (chatUpdate) => {
+    try {
+      let mek = chatUpdate.messages[0];
+      if (!mek.message) return;
+      mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
+            
+      if (autoviewstatus === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
+        client.readMessages([mek.key]);
+      }
+            
+      // RE-IMPLEMENTED AUTOLIKE LOGIC WITH ROTATING EMOTES
+      if (autolike === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
+        const nickk = await client.decodeJid(client.user.id);
+        console.log('Decoded JID:', nickk);
+        if (!mek.status) {
+            console.log('Sending reaction to:', mek.key.remoteJid);
+            const date = new Date(); // Get current date for emoji rotation
+            const dayOfMonth = date.getDate();
+            const emojiIndex = (dayOfMonth - 1) % statusEmojis.length; // Cycle through emojis daily
+            const selectedEmoji = statusEmojis[emojiIndex];
 
-client.ev.on("messages.upsert", async (chatUpdate) => {
-try {
-let mek = chatUpdate.messages[0];
-if (!mek.message) return;
-mek.message = Object.keys(mek.message)[0] === "ephemeralMessage" ? mek.message.ephemeralMessage.message : mek.message;
-
-if (autoviewstatus === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
-client.readMessages([mek.key]);
-}
-
-// UPDATED AUTOLIKE LOGIC WITH ROTATING EMOTES
-if (autolike === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
-const nickk = await client.decodeJid(client.user.id);
-console.log('Decoded JID:', nickk);
-if (!mek.status) {
-console.log('Sending reaction to:', mek.key.remoteJid);
-    const date = new Date(); // Get current date for emoji rotation
-    const dayOfMonth = date.getDate();
-    const emojiIndex = (dayOfMonth - 1) % statusEmojis.length; // Cycle through emojis daily
-    const selectedEmoji = statusEmojis[emojiIndex];
-
-await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: selectedEmoji } }, { statusJidList: [mek.key.participant, nickk] });
-console.log('Reaction sent');
-}
-
-}
-
+            await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: selectedEmoji } }, { statusJidList: [mek.key.participant, nickk] }); // <--- MODIFIED
+            console.log('Reaction sent');
+        }
+      }
+            
 if (!client.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
-let m = smsg(client, mek, store);
-const raven = require("./blacks");
-raven(client, m, chatUpdate, store);
-} catch (err) {
-console.log(err);
-}
-});
+      let m = smsg(client, mek, store);
+      const raven = require("./blacks");
+      raven(client, m, chatUpdate, store);
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
-// Handle error
-const unhandledRejections = new Map();
-process.on("unhandledRejection", (reason, promise) => {
-unhandledRejections.set(promise, reason);
-console.log("Unhandled Rejection at:", promise, "reason:", reason);
-});
-process.on("rejectionHandled", (promise) => {
-unhandledRejections.delete(promise);
-});
-process.on("Something went wrong", function (err) {
-console.log("Caught exception: ", err);
-});
+  // Handle error
+  const unhandledRejections = new Map();
+  process.on("unhandledRejection", (reason, promise) => {
+    unhandledRejections.set(promise, reason);
+    console.log("Unhandled Rejection at:", promise, "reason:", reason);
+  });
+  process.on("rejectionHandled", (promise) => {
+    unhandledRejections.delete(promise);
+  });
+  process.on("Something went wrong", function (err) {
+    console.log("Caught exception: ", err);
+  });
 
-// Setting
-client.decodeJid = (jid) => {
-if (!jid) return jid;
-if (/:\d+@/gi.test(jid)) {
-let decode = jidDecode(jid) || {};
-return (decode.user && decode.server && decode.user + "@" + decode.server) || jid;
-} else return jid;
-};
+  // Setting
+  client.decodeJid = (jid) => {
+    if (!jid) return jid;
+    if (/:\d+@/gi.test(jid)) {
+      let decode = jidDecode(jid) || {};
+      return (decode.user && decode.server && decode.user + "@" + process.env.WHATSAPP_URL) || jid; // Fixed this line if process.env.WHATSAPP_URL is what you intended
+    } else return jid;
+  };
 
-client.ev.on("contacts.update", (update) => {
-for (let contact of update) {
-let id = client.decodeJid(contact.id);
-if (store && store.contacts) store.contacts[id] = { id, name: contact.notify };
-}
-});
+  client.ev.on("contacts.update", (update) => {
+    for (let contact of update) {
+      let id = client.decodeJid(contact.id);
+      if (store && store.contacts) store.contacts[id] = { id, name: contact.notify };
+    }
+  });
 
-client.ev.on("group-participants.update", async (update) => {
-if (antiforeign === 'TRUE' && update.action === "add") {
-for (let participant of update.participants) {
-const jid = client.decodeJid(participant);
-const phoneNumber = jid.split("@")[0];
-// Extract phone number
-if (!phoneNumber.startsWith(mycode)) {
-await client.sendMessage(update.id, {
-text: "Your Country code is not allowed to join this group !",
-mentions: [jid]
-});
-await client.groupParticipantsUpdate(update.id, [jid], "remove");
-console.log(`Removed ${jid} from group ${update.id} because they are not from ${mycode}`);
-}
-}
-}
-Events(client, update); // Call existing event handler
-});
-
-client.ev.on('call', async (callData) => {
-if (anticall === 'TRUE') {
-const callId = callData[0].id;
-const callerId = callData[0].from;
-
-await client.rejectCall(callId, callerId);
-const currentTime = Date.now();
-if (currentTime - lastTextTime >= messageDelay) {
-await client.sendMessage(callerId, {
-text: "Anticall is active, Only texts are allowed"
-});
-lastTextTime = currentTime;
-} else {
-console.log('Message skipped to prevent overflow');
-}
-}
-});
-
-client.getName = (jid, withoutContact = false) => {
-let id = client.decodeJid(jid);
-withoutContact = client.withoutContact || withoutContact;
-let v;
-if (id.endsWith("@g.us"))
-return new Promise(async (resolve) => {
-v = store.contacts[id] || {};
-if (!(v.name || v.subject)) v = client.groupMetadata(id) || {};
-resolve(v.name || v.subject || PhoneNumber("+" + id.replace("@s.whatsapp.net", "")).getNumber("international"));
-});
-else {
-    v =
-        id === "0@s.whatsapp.net"
-            ? {
-                id,
-                name: "WhatsApp",
+  client.ev.on("group-participants.update", async (update) => {
+        if (antiforeign === 'TRUE' && update.action === "add") {
+            for (let participant of update.participants) {
+                const jid = client.decodeJid(participant);
+                const phoneNumber = jid.split("@")[0];
+                    // Extract phone number
+                if (!phoneNumber.startsWith(mycode)) {
+                        await client.sendMessage(update.id, {
+                    text: "Your Country code is not allowed to join this group !",
+                    mentions: [jid]
+                });
+                    await client.groupParticipantsUpdate(update.id, [jid], "remove");
+                    console.log(`Removed ${jid} from group ${update.id} because they are not from ${mycode}`);
+                }
             }
-            : id === client.decodeJid(client.user.id)
-                ? client.user
-                : store.contacts[id] || {};
+        }
+        Events(client, update); // Call existing event handler
+    });
 
-    // Custom change: If the JID matches the owner's number, return the owner name
-    if (id === ownernumber + '@s.whatsapp.net') {
-        return ownername;
+ client.ev.on('call', async (callData) => {
+    if (anticall === 'TRUE') {
+      const callId = callData[0].id;
+      const callerId = callData[0].from;
+
+      await client.rejectCall(callId, callerId);
+            const currentTime = Date.now();
+      if (currentTime - lastTextTime >= messageDelay) {
+        await client.sendMessage(callerId, {
+          text: "Anticall is active, Only texts are allowed"
+        });
+        lastTextTime = currentTime;
+      } else {
+        console.log('Message skipped to prevent overflow');
+      }
+    }
+    });
+
+        
+  client.getName = (jid, withoutContact = false) => {
+    let id = client.decodeJid(jid);
+    withoutContact = client.withoutContact || withoutContact;
+    let v;
+    if (id.endsWith("@g.us"))
+      return new Promise(async (resolve) => {
+        v = store.contacts[id] || {};
+        if (!(v.name || v.subject)) v = client.groupMetadata(id) || {};
+        resolve(v.name || v.subject || PhoneNumber("+" + id.replace("@s.whatsapp.net", "")).getNumber("international"));
+      });
+    else {
+      v =
+        id === "0@s.whatsapp.net"
+          ? {
+              id,
+              name: "WhatsApp",
+            }
+          : id === client.decodeJid(client.user.id)
+          ? client.user
+          : store.contacts[id] || {};
+      // ADDED: Custom change: If the JID matches the owner's number, return the owner name
+      if (id === ownernumber + '@s.whatsapp.net') { // <--- ADDED
+          return ownername; // <--- ADDED
+      } // <--- ADDED
     }
     return (withoutContact ? "" : v.name) || v.subject || v.verifiedName || PhoneNumber("+" + jid.replace("@s.whatsapp.net", "")).getNumber("international");
-}
-};
+  };
 
-client.setStatus = (status) => {
-client.query({
-tag: "iq",
-attrs: {
-to: "@s.whatsapp.net",
-type: "set",
-xmlns: "status",
-},
-content: [
-{
-tag: "status",
-attrs: {},
-content: Buffer.from(status, "utf-8"),
-},
-],
-});
-return status;
-};
+  client.setStatus = (status) => {
+    client.query({
+      tag: "iq",
+      attrs: {
+        to: "@s.whatsapp.net",
+        type: "set",
+        xmlns: "status",
+      },
+      content: [
+        {
+          tag: "status",
+          attrs: {},
+          content: Buffer.from(status, "utf-8"),
+        },
+      ],
+    });
+    return status;
+  };
 
-client.public = true;
-client.serializeM = (m) => smsg(client, m, store);
+  client.public = true;
+  client.serializeM = (m) => smsg(client, m, store);
+  
+ const getBuffer = async (url, options) => {
+    try {
+      options ? options : {};
+      const res = await axios({
+        method: "get",
+        url,
+        headers: {
+          DNT: 1,
+          "Upgrade-Insecure-Request": 1,
+        },
+        ...options,
+        responseType: "arraybuffer",
+      });
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  };
 
-const getBuffer = async (url, options) => {
-try {
-options ? options : {};
-const res = await axios({
-method: "get",
-url,
-headers: {
-DNT: 1,
-"Upgrade-Insecure-Request": 1,
-},
-...options,
-responseType: "arraybuffer",
-});
-return res.data;
-} catch (err) {
-return err;
-}
-};
+  client.sendImage = async (jid, path, caption = "", quoted = "", options) => {
+    let buffer = Buffer.isBuffer(path)
+      ? path
+      // FIX: Corrected regex syntax for base64 check
+      : /^data:(image\/\w+|video\/\w+|application\/\w+);base64,/i.test(path) // <--- MODIFIED
+      ? Buffer.from(path.split(',')[1], "base64")
+      : /^https?:\/\//.test(path)
+      ? await getBuffer(path)
+      : fs.existsSync(path)
+      ? fs.readFileSync(path)
+      : Buffer.alloc(0);
+    return await client.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted });
+  };
 
-client.sendImage = async (jid, path, caption = "", quoted = "", options) => {
-let buffer = Buffer.isBuffer(path)
-? path
-// FIX: Corrected regex syntax for base64 check - THIS IS THE FIX FOR SyntaxError
-: /^data:(image\/\w+|video\/\w+|application\/\w+);base64,/i.test(path)
-? Buffer.from(path.split(',')[1], "base64")
-: /^https?:\/\//.test(path)
-? await getBuffer(path)
-: fs.existsSync(path)
-? fs.readFileSync(path)
-: Buffer.alloc(0);
-return await client.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted });
-};
+  client.sendFile = async (jid, PATH, fileName, quoted = {}, options = {}) => {
+    let types = await client.getFile(PATH, true);
+    let { filename, size, ext, mime, data } = types;
+    let type = '', mimetype = mime, pathFile = filename;
+    if (options.asDocument) type = 'document';
+    if (options.asSticker || /webp/.test(mime)) {
+      let { writeExif } = require('./lib/ravenexif.js');
+      let media = { mimetype: mime, data };
+      pathFile = await writeExif(media, { packname: packname, author: packname, categories: options.categories ? options.categories : [] });
+      await fs.promises.unlink(filename);
+      type = 'sticker';
+      mimetype = 'image/webp';
+    } else if (/image/.test(mime)) type = 'image';
+    else if (/video/.test(mime)) type = 'video';
+    else if (/audio/.test(mime)) type = 'audio';
+    else type = 'document';
+    await client.sendMessage(jid, { [type]: { url: pathFile }, mimetype, fileName, ...options }, { quoted, ...options });
+    return fs.promises.unlink(pathFile);
+  };
 
-client.sendFile = async (jid, PATH, fileName, quoted = {}, options = {}) => {
-let types = await client.getFile(PATH, true);
-let { filename, size, ext, mime, data } = types;
-let type = '', mimetype = mime, pathFile = filename;
-if (options.asDocument) type = 'document';
-if (options.asSticker || /webp/.test(mime)) {
-let { writeExif } = require('./lib/ravenexif.js');
-let media = { mimetype: mime, data };
-pathFile = await writeExif(media, { packname: packname, author: packname, categories: options.categories ? options.categories : [] });
-await fs.promises.unlink(filename);
-type = 'sticker';
-mimetype = 'image/webp';
-} else if (/image/.test(mime)) type = 'image';
-else if (/video/.test(mime)) type = 'video';
-else if (/audio/.test(mime)) type = 'audio';
-else type = 'document';
-await client.sendMessage(jid, { [type]: { url: pathFile }, mimetype, fileName, ...options }, { quoted, ...options });
-return fs.promises.unlink(pathFile);
-};
+  client.parseMention = async (text) => {
+    return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net');
+  };
 
-client.parseMention = async (text) => {
-return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net');
-};
+  client.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
+    let buff = Buffer.isBuffer(path) ? path : /^data:(image\/\w+|video\/\w+|application\/\w+);base64,/i.test(path) ? Buffer.from(path.split(',')[1], 'base64') : /^https?:\/\//.test(path) ? await getBuffer(path) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0); // <--- MODIFIED
+    let buffer;
+    if (options && (options.packname || options.author)) {
+      buffer = await writeExifImg(buff, options);
+    } else {
+      buffer = await imageToWebp(buff);
+    }
+    await client.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted });
+    return buffer;
+  };
 
-client.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
-let buff = Buffer.isBuffer(path) ? path : /^data:.?/.?;base64,/i.test(path) ? Buffer.from(path.split(',')[1], 'base64') : /^https?:\/\//.test(path) ? await getBuffer(path) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0);
-let buffer;
-if (options && (options.packname || options.author)) {
-buffer = await writeExifImg(buff, options);
-} else {
-buffer = await imageToWebp(buff);
-}
-await client.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted });
-return buffer;
-};
+  client.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
+    let buff = Buffer.isBuffer(path) ? path : /^data:(image\/\w+|video\/\w+|application\/\w+);base64,/i.test(path) ? Buffer.from(path.split(',')[1], 'base64') : /^https?:\/\//.test(path) ? await getBuffer(path) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0); // <--- MODIFIED
+    let buffer;
+    if (options && (options.packname || options.author)) {
+      buffer = await writeExifVid(buff, options);
+    } else {
+      buffer = await videoToWebp(buff);
+    }
+    await client.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted });
+    return buffer;
+  };
 
-client.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
-let buff = Buffer.isBuffer(path) ? path : /^data:.?/.?;base64,/i.test(path) ? Buffer.from(path.split(',')[1], 'base64') : /^https?:\/\//.test(path) ? await getBuffer(path) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0);
-let buffer;
-if (options && (options.packname || options.author)) {
-buffer = await writeExifVid(buff, options);
-} else {
-buffer = await videoToWebp(buff);
-}
-await client.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted });
-return buffer;
-};
+  client.downloadMediaMessage = async (message) => {
+    let mime = (message.msg || message).mimetype || '';
+    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
+    const stream = await downloadContentFromMessage(message, messageType);
+    let buffer = Buffer.from([]);
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+    return buffer;
+  };
 
-client.downloadMediaMessage = async (message) => {
-let mime = (message.msg || message).mimetype || '';
-let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-const stream = await downloadContentFromMessage(message, messageType);
-let buffer = Buffer.from([]);
-for await (const chunk of stream) {
-buffer = Buffer.concat([buffer, chunk]);
-}
-return buffer;
-};
+  client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+    let quoted = message.msg ? message.msg : message;
+    let mime = (message.msg || message).mimetype || '';
+    let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
+    const stream = await downloadContentFromMessage(quoted, messageType);
+    let buffer = Buffer.from([]);
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
+    let type = await FileType.fromBuffer(buffer);
+    trueFileName = attachExtension ? (filename + '.' + type.ext) : filename;
+    await fs.writeFileSync(trueFileName, buffer);
+    return trueFileName;
+  };
 
-client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
-let quoted = message.msg ? message.msg : message;
-let mime = (message.msg || message).mimetype || '';
-let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0];
-const stream = await downloadContentFromMessage(quoted, messageType);
-let buffer = Buffer.from([]);
-for await (const chunk of stream) {
-buffer = Buffer.concat([buffer, chunk]);
-}
-let type = await FileType.fromBuffer(buffer);
-trueFileName = attachExtension ? (filename + '.' + type.ext) : filename;
-await fs.writeFileSync(trueFileName, buffer);
-return trueFileName;
-};
+  client.sendText = (jid, text, quoted = "", options) => client.sendMessage(jid, { text: text, ...options }, { quoted });
 
-client.sendText = (jid, text, quoted = "", options) => client.sendMessage(jid, { text: text, ...options }, { quoted });
+  client.cMod = (jid, copy, text = "", sender = client.user.id, options = {}) => {
+    let mtype = Object.keys(copy.message)[0];
+    let isEphemeral = mtype === "ephemeralMessage";
+    if (isEphemeral) {
+      mtype = Object.keys(copy.message.ephemeralMessage.message)[0];
+    }
+    let msg = isEphemeral ? copy.message.ephemeralMessage.message : copy.message;
+    let content = msg[mtype];
+    if (typeof content === "string") msg[mtype] = text || content;
+    else if (content.caption) content.caption = text || content.caption;
+    else if (content.text) content.text = text || content.text;
+    if (typeof content !== "string")
+      msg[mtype] = {
+        ...content,
+        ...options,
+      };
+    if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant;
+    else if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant;
+    if (copy.key.remoteJid.includes("@s.whatsapp.net")) sender = sender || copy.key.remoteJid;
+    else if (copy.key.remoteJid.includes("@broadcast")) sender = sender || copy.key.remoteJid;
+    copy.key.remoteJid = jid;
+    copy.key.fromMe = sender === client.user.id;
 
-client.cMod = (jid, copy, text = "", sender = client.user.id, options = {}) => {
-let mtype = Object.keys(copy.message)[0];
-let isEphemeral = mtype === "ephemeralMessage";
-if (isEphemeral) {
-mtype = Object.keys(copy.message.ephemeralMessage.message)[0];
-}
-let msg = isEphemeral ? copy.message.ephemeralMessage.message : copy.message;
-let content = msg[mtype];
-if (typeof content === "string") msg[mtype] = text || content;
-else if (content.caption) content.caption = text || content.caption;
-else if (content.text) content.text = text || content.text;
-if (typeof content !== "string")
-msg[mtype] = {
-...content,
-...options,
-};
-if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant;
-else if (copy.key.participant) sender = copy.key.participant = sender || copy.key.participant;
-if (copy.key.remoteJid.includes("@s.whatsapp.net")) sender = sender || copy.key.remoteJid;
-else if (copy.key.remoteJid.includes("@broadcast")) sender = sender || copy.key.remoteJid;
-copy.key.remoteJid = jid;
-copy.key.fromMe = sender === client.user.id;
+    return proto.WebMessageInfo.fromObject(copy);
+  };
 
-return proto.WebMessageInfo.fromObject(copy);
-
-};
-
-return client;
+  return client;
 }
 
 app.use(express.static("pixel"));
@@ -438,8 +436,8 @@ startRaven();
 
 let file = require.resolve(__filename);
 fs.watchFile(file, () => {
-fs.unwatchFile(file);
-console.log(chalk.redBright(`Update ${__filename}`));
-delete require.cache[file];
-require(file);
+  fs.unwatchFile(file);
+  console.log(chalk.redBright(`Update ${__filename}`));
+  delete require.cache[file];
+  require(file);
 });
