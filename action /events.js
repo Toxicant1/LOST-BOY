@@ -1,8 +1,9 @@
-const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE'; 
-const botname = process.env.BOTNAME || '𝑩𝑳𝑨𝑪𝑲 𝑩𝑬𝑳𝑻𝑨𝑯 𝑩𝑶𝑻';
+Const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
+const botname = process.env.BOTNAME || '𝑳𝑶𝑺𝑻 𝑩𝑶𝒀'; // Changed to "LOST BOY" using the same Unicode style as the original botname
+const ownerName = '𝓘𝓼𝓱𝓪𝓺 𝓘𝓫𝓻𝓪𝓱𝓲𝓶'; // Keeping Ishaq Ibrahim with the "script" Unicode style
 
 const Events = async (client, Nick) => {
-    
+
     try {
         let metadata = await client.groupMetadata(Nick.id);
         let participants = Nick.participants;
@@ -21,7 +22,7 @@ const Events = async (client, Nick) => {
             if (Nick.action === "add") {
                 let userName = num;
 
-                let Welcometext = `@${userName.split("@")[0]} Holla👋,\n\nWelcome to ${metadata.subject}.\n\nYou might want to read group description,\nFollow group rules to avoid being removed.\n\n ${botname} 2025.`;
+                let Welcometext = `@${userName.split("@")[0]} Holla👋,\n\nWelcome to ${metadata.subject}.\n\nYou might want to read group description,\nFollow group rules to avoid being removed.\n\n ${botname} owned by ${ownerName} 2025.`;
                 if (welcomegoodbye === 'TRUE') {
                     await client.sendMessage(Nick.id, {
                         image: { url: dpuser },
@@ -32,7 +33,7 @@ const Events = async (client, Nick) => {
             } else if (Nick.action === "remove") {
                 let userName2 = num;
 
-                let Lefttext = `@${userName2.split("@")[0]} Goodbye we shall miss you😔.\n\nAnyway Goodbye .`;
+                let Lefttext = `@${userName2.split("@")[0]} Goodbye we shall miss you😔.\n\nAnyway Goodbye .\n\n${botname} owned by ${ownerName}.`;
                 if (welcomegoodbye === 'TRUE') {
                     await client.sendMessage(Nick.id, {
                         image: { url: dpuser },
