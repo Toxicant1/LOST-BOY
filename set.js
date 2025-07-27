@@ -1,4 +1,4 @@
-const sessionName = 'session';
+Const sessionName = 'session';
 const session = process.env.SESSION || '';
 const autobio = process.env.AUTOBIO || 'FALSE';
 const autolike = process.env.AUTOLIKE_STATUS || 'TRUE';
@@ -13,12 +13,27 @@ const anticall = process.env.AUTOREJECT_CALL || 'TRUE';
 
 // 💥 Stylized bot branding
 const botname = process.env.BOTNAME || '⚡ 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞 ⚡';
+const ownername = process.env.OWNER_NAME || 'Blackie254'; // ✨ ADDED: Owner Name
+const dev = process.env.DEV || '254741819582'; // ✅ Your number
+const ownernumber = process.env.OWNER_NUMBER || dev; // ✨ ADDED: Owner Number (defaults to DEV)
+
 const antibot = process.env.ANTIBOT || 'FALSE';
 const author = process.env.STICKER_AUTHOR || '👑 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞';
 const packname = process.env.STICKER_PACKNAME || '🔥 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞 𝕻𝖆𝖈𝖐 🔥';
 
+// ✨ ADDED: Quotes for autobio
+const lostBoyQuotes = [
+    "The night is vast, and we are but echoes within it. 🌌👻",
+    "Lost in shadows, yet we find our own light. 🕯️🖤",
+    "Embrace the darkness, for it to reveals what the day hides. 🌑👁️",
+    "Whispers in the void, where silence screams. 🗣️🌫️",
+    "Forever wandering, forever seeking the unknown. 🧭✨"
+];
+
+// ✨ ADDED: Emojis for rotating status reactions
+const statusEmojis = ['👀', '💖', '🙈', '🤦‍♂️', '😇', '🙌', '🔥', '🐀', '😹', '💀', '👻', '😊', '✌️', '🤞', '☠️', '❤️‍🔥'];
+
 const antitag = process.env.ANTITAG || 'TRUE';
-const dev = process.env.DEV || '254741819582'; // ✅ Your number
 
 const menulink = process.env.MENU_LINK || 'https://files.catbox.moe/jxxwms.jpeg';
 const menu = process.env.MENU_TYPE || 'IMAGE';
@@ -46,5 +61,6 @@ module.exports = {
   badwordkick, bad, mode, group, NotOwner, botname, botAdmin, antiforeign,
   menu, autoread, antilink, admin, mycode, antilinkall, anticall, antitag,
   antidel, wapresence, welcomegoodbye, antibot, herokuapi, prefix,
-  port, gptdm, appname, autolike, autoviewstatus
+  port, gptdm, appname, autolike, autoviewstatus, // Existing exports
+  ownername, ownernumber, lostBoyQuotes, statusEmojis // ✨ NEW EXPORTS
 };
