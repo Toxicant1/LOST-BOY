@@ -1,7 +1,7 @@
 require("./config.js");
 const {
     default: LostBoyConnect,
-    useSingleFileAuthState,
+    useMultiFileAuthState,
     DisconnectReason,
     fetchLatestBaileysVersion,
     makeInMemoryStore,
@@ -15,28 +15,22 @@ const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 const chalk = require("chalk");
-const { state, saveState } = useSingleFileAuthState("./session.json");
-const { autobio, emoji1, emoji2, emoji3, ownername } = require("./set");
-const { smsg } = require("./lib/simple");
 const figlet = require("figlet");
 const cfonts = require("cfonts");
+const { autobio, emoji1, emoji2, emoji3, ownername } = require("./set");
+const { smsg } = require("./lib/simple");
 
-// Display Fancy Banner with Fonts
+// Display Fonts
 cfonts.say("LostBoy", {
   font: "block",
   align: "center",
   colors: ["red", "black"],
-  background: "transparent",
-  letterSpacing: 1,
-  lineHeight: 1,
-  space: true,
 });
 
 cfonts.say("Ishak Ibrahim", {
   font: "chrome",
   align: "center",
   colors: ["yellow"],
-  background: "transparent",
 });
 
 // Setup Store
@@ -48,6 +42,7 @@ setInterval(() => {
 
 // MAIN START FUNCTION
 async function startLostBoyBot() {
+    const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version, isLatest } = await fetchLatestBaileysVersion();
     const sock = LostBoyConnect({
         version,
@@ -60,9 +55,9 @@ async function startLostBoyBot() {
         browser: ["LostBoy", "Chrome", "1.0.0"]
     });
 
-    // Save Auth State
+    // Save Auth
     store.bind(sock.ev);
-    sock.ev.on("creds.update", saveState);
+    sock.ev.on("creds.update", saveCreds);
 
     // Auto Bio Feature
     if (autobio === "on") {
@@ -70,61 +65,61 @@ async function startLostBoyBot() {
             const time = new Date().toLocaleTimeString("en-US", { hour12: true });
             const newBio = `🤖 ${emoji1} I'm LostBoy | Time: ${time}`;
             await sock.updateProfileStatus(newBio).catch(() => {});
-        }, 40 * 1000); // every 40 seconds
+        }, 40 * 1000);
     }
 
-    // Events
+    // Event Handler
     require("./action/events")(sock, store);
 
-    // Connection Handling
+    // Connection Status
     sock.ev.on("connection.update", async (update) => {
         const { connection, lastDisconnect } = update;
         if (connection === "close") {
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
             switch (reason) {
                 case DisconnectReason.badSession:
-                    console.log(chalk.red("Bad Session File. Please Delete Session and Scan Again."));
+                    console.log(chalk.red("❌ Bad session file. Delete and rescan."));
                     process.exit();
                     break;
                 case DisconnectReason.connectionClosed:
-                    console.log(chalk.yellow("Connection Closed. Reconnecting..."));
+                    console.log(chalk.yellow("🔁 Connection closed. Reconnecting..."));
                     startLostBoyBot();
                     break;
                 case DisconnectReason.connectionLost:
-                    console.log(chalk.yellow("Connection Lost. Reconnecting..."));
+                    console.log(chalk.yellow("🔁 Connection lost. Reconnecting..."));
                     startLostBoyBot();
                     break;
                 case DisconnectReason.connectionReplaced:
-                    console.log(chalk.red("Connection Replaced. Another session opened."));
+                    console.log(chalk.red("❌ Connection replaced by another session."));
                     process.exit();
                     break;
                 case DisconnectReason.loggedOut:
-                    console.log(chalk.red("Device Logged Out. Please Scan Again."));
+                    console.log(chalk.red("❌ Logged out. Rescan required."));
                     process.exit();
                     break;
                 case DisconnectReason.restartRequired:
-                    console.log(chalk.green("Restart Required. Restarting..."));
+                    console.log(chalk.green("♻️ Restart required. Restarting..."));
                     startLostBoyBot();
                     break;
                 case DisconnectReason.timedOut:
-                    console.log(chalk.yellow("Connection Timed Out. Reconnecting..."));
+                    console.log(chalk.yellow("⌛ Timed out. Reconnecting..."));
                     startLostBoyBot();
                     break;
                 default:
-                    console.log(chalk.red("Unknown Disconnect Reason. Reconnecting..."));
+                    console.log(chalk.red("❌ Unknown error. Reconnecting..."));
                     startLostBoyBot();
             }
         } else if (connection === "open") {
-            console.log(chalk.greenBright("✅ LostBoy is now online and connected!"));
+            console.log(chalk.greenBright("✅ LostBoy is online and ready!"));
         }
     });
 
-    // Handle Incoming Messages
+    // Handle Messages
     sock.ev.on("messages.upsert", async (m) => {
         try {
             smsg(sock, m);
         } catch (err) {
-            console.log("Error handling message: ", err);
+            console.log("💥 Message Error:", err);
         }
     });
 }
