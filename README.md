@@ -1,4 +1,4 @@
-# <p align="center"> <a href="https://github.com/Toxicant1/LOST-BOY.git"><img src="https://readme-typing-svg.demolab.com?font=Black+Ops+One&size=60&pause=1000&color=d1fa02&center=true&vCenter=true&multiline=false&width=910&height=100&lines=LOSTBOY+%F0%9F%A5%BA%F0%9F%8D%80" alt="LostBoy Typing SVG" /></a> </p>
+# 🌟 **LOSTBOY BOT** 🌟
 <p align="center">
   <img src="https://i.imgur.com/dBaSKWF.gif" height="40" width="100%">
 </p>
@@ -21,7 +21,7 @@
 [![Owner Profile](https://raw.githubusercontent.com/Toxicant1/LOST-BOY/main/Media/LOST-BOY.jpg)](https://github.com/Toxicant1)
 </p>
 <p align="center">
-  <a href="#"><img src="https://readme-typing-svg.herokuapp.com?font=Press+Start+2P&size=35&pause=1000&color=d1fa02&center=true&vCenter=true&multiline=false&lines=%E2%9C%A8+L%20O%20S%20T%20B%20O%20Y+%E2%9C%A8" alt="LostBoy Typing SVG">
+  <a href="#"><img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=45&pause=1000&color=d1fa02&center=true&vCenter=true&multiline=false&width=400&height=70&lines=LOSTBOY" alt="LostBoy Typing SVG">
 </p>
 <p align="center">
 <a href="#"><img title="Creator" src="https://img.shields.io/badge/Creator- %F0%9D%97%B2%F0%9D%98%82%F0%9D%97%BB%F0%9D%98%80%F0%9D%97%B6%F0%9D%97%B6%F0%9D%97%BF+%F0%9D%97%B2%F0%9D%97%B6%F0%9D%97%B7%F0%9D%97%BF%F0%9D%97%B3%F0%9D%97%B6%F0%9D%97%BA-blue.svg?style=for-the-badge&logo=github"></a>
@@ -41,7 +41,7 @@
 
 <p align="center">
 
-<a href="https://api.whatsapp.com/send?phone=254741819582&text=Hello+LostBoy"><img src="https://img.shields.io/badge/Contact %F0%9D%97%B2%F0%9D%98%82%F0%9D%97%BB%F0%9D%97%B6%F0%9D%97%B6%F0%9D%97%BF+%F0%9D%97%B2%F0%9D%97%B6%F0%9D%97%B7%F0%9D%97%BF%F0%9D%97%B3%F0%9D%97%B6%F0%9D%97%BA -25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
+<a href="https://api.whatsapp.com/send?phone=254741819582&text=Hello+LostBoy"><img src="https://img.shields.io/badge/Contact %F0%9D%97%B2%F0%9D%98%82%F0%9D%97%BB%F0%9D%98%80%F0%9D%97%B6%F0%9D%97%B6%F0%9D%97%BF+%F0%9D%97%B2%F0%9D%97%B6%F0%9D%97%B7%F0%9D%97%BF%F0%9D%97%B3%F0%9D%97%B6%F0%9D%97%BA -25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
 
 
 ***This bot is created with the help of NodeJS and uses [Baileys](https://github.com/whiskeysockets/Baileys)***
