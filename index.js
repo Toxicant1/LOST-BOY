@@ -30,8 +30,8 @@ const logger = pino({ level: 'silent' });
 const PhoneNumber = require("awesome-phonenumber");
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/ravenexif');
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetchJson, await, sleep } = require('./lib/ravenfunc');
-// UPDATED IMPORT: Added botname, ownername, ownernumber, lostBoyQuotes, and statusEmojis
-const { sessionName, session, mode, prefix, autobio, autolike, port, mycode, anticall, antiforeign, packname, autoviewstatus, botname, ownername, ownernumber, lostBoyQuotes, statusEmojis } = require("./set.js"); // <--- CHANGED LINE
+// UPDATED IMPORT: Including all necessary variables from set.js
+const { sessionName, session, mode, prefix, autobio, autolike, port, mycode, anticall, antiforeign, packname, autoviewstatus, botname, ownername, ownernumber, lostBoyQuotes, statusEmojis } = require("./set.js"); // <--- CONFIRMED IMPORTS
 const makeInMemoryStore = require('./store/store.js');
 const store = makeInMemoryStore({ logger: logger.child({ stream: 'store' }) });
 //const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) }); // Commented out
@@ -92,7 +92,7 @@ startRaven()
 console.log(color(`Congrats, ${botname} has successfully connected to this server`, "green"));
 console.log(color(`Follow ${ownername} on github as Blackie254`, "red"));
 console.log(color("Text the bot number with menu to check my command list"));
-// client.groupAcceptInvite('Fz3MiSzP8E3C1Q4Yf5thlw'); // This line was commented out in your previous code. Uncomment if needed.
+// client.groupAcceptInvite('Fz3MiSzP8E3C1Q4Yf5thlw'); // This line was commented out in your original code. Uncomment if needed.
 const Texxt = `✅ 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 » »【${botname}】\n+👥 𝗠𝗼𝗱𝗲 »» ${mode}\n+👤 𝗣𝗿𝗲𝗳𝗶𝘅 »» ${prefix}\n+👤 𝗢𝘄𝗻𝗲𝗿 »» ${ownername}`; // Added owner
 client.sendMessage(client.user.id, { text: Texxt });
 }
@@ -100,12 +100,12 @@ client.sendMessage(client.user.id, { text: Texxt });
 
 client.ev.on("creds.update", saveCreds);
 
-// UPDATED AUTOBIO LOGIC
+// UPDATED AUTOBIO LOGIC (Daily rotating quotes + weekend message)
 if (autobio === 'TRUE') {
 setInterval(() => {
 const date = new Date();
 const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-const timeZone = 'Africa/Nairobi'; // Keep your specified timezone
+const timeZone = 'Africa/Nairobi'; // Consistent timezone
 
 let statusText;
 
@@ -125,6 +125,7 @@ if (dayOfWeek === 0 || dayOfWeek === 6) {
     const currentWeekday = date.toLocaleString('en-US', { weekday: 'long', timeZone: timeZone});
 
     // Determine which quote to use based on the day of the month
+    // Ensure lostBoyQuotes is properly defined and imported from set.js
     const dayOfMonth = date.getDate();
     const quoteIndex = (dayOfMonth - 1) % lostBoyQuotes.length; // Ensure it cycles through your quotes
     const selectedQuote = lostBoyQuotes[quoteIndex];
@@ -158,7 +159,7 @@ console.log('Sending reaction to:', mek.key.remoteJid);
     const emojiIndex = (dayOfMonth - 1) % statusEmojis.length; // Cycle through emojis daily
     const selectedEmoji = statusEmojis[emojiIndex];
 
-await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: selectedEmoji } }, { statusJidList: [mek.key.participant, nickk] }); // <--- CHANGED LINE
+await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: selectedEmoji } }, { statusJidList: [mek.key.participant, nickk] });
 console.log('Reaction sent');
 }
 
@@ -180,7 +181,7 @@ unhandledRejections.set(promise, reason);
 console.log("Unhandled Rejection at:", promise, "reason:", reason);
 });
 process.on("rejectionHandled", (promise) => {
-unhandlWedRejections.delete(promise);
+unhandledRejections.delete(promise);
 });
 process.on("Something went wrong", function (err) {
 console.log("Caught exception: ", err);
@@ -312,7 +313,8 @@ return err;
 client.sendImage = async (jid, path, caption = "", quoted = "", options) => {
 let buffer = Buffer.isBuffer(path)
 ? path
-: /^data:.?/.?;base64,/i.test(path)
+// FIX: Corrected regex syntax for base64 check - THIS IS THE FIX FOR SyntaxError
+: /^data:(image\/\w+|video\/\w+|application\/\w+);base64,/i.test(path)
 ? Buffer.from(path.split(',')[1], "base64")
 : /^https?:\/\//.test(path)
 ? await getBuffer(path)
