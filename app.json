@@ -1,6 +1,5 @@
-
 {
-  "name": "𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓 𝐁𝐎𝐓",
+  "name": "𝐋𝐨𝐬𝐭𝐁𝐨𝐲",
   "description": "I don't know what I'm doing",
   "keywords": [
     "bot",
@@ -15,20 +14,19 @@
     "baileys-md",
     "md-bot"
   ],
-  "website": "https://github.com/Blackie254/black-super-bot#readme",
-  "repository": "https://github.com/Blackie254/black-super-bot.git",
+  "website": "https://github.com/Toxicant1/LOST-BOY.git",
+  "repository": "https://github.com/Toxicant1/LOST-BOY.git",
   "logo": "https://files.catbox.moe/s5nuh3.jpg",
   "success_url": "/",
   "env": {
     "PREFIX": {
-      "description": "𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓 𝐁𝐎𝐓 Ex: . , / , # , & etc. Put any symbol or leave it blank",
+      "description": "𝐋𝐨𝐬𝐭𝐁𝐨𝐲 Ex: . , / , # , & etc. Put any symbol or leave it blank",
       "value": ".",
       "required": false
-
     },
     "DEV": {
       "description": "Put any phone numbers you want to be bot owner without + or spaces \",\" Ex: 254114283550,27849544670  ",
-      "value": "254114283550",
+      "value": "254741819582",
       "required": true
     },
     "ANTIDELETE": {
@@ -36,8 +34,6 @@
       "value": "TRUE",
       "required": false
     },
-    
-    
     "AUTOREJECT_CALL": {
       "description": "Put TRUE if you want bot to decline all incoming calls",
       "value": "FALSE",
@@ -87,7 +83,6 @@
       "value": "FALSE",
       "required": false
 },
-   
  "ANTILINK": {
       "description": "Input TRUE if you want bot to kick link senders",
       "value": "FALSE",
@@ -117,7 +112,6 @@
       "value": "PUBLIC",
       "required": true
     },
-    
  "AUTOBIO": {
       "description": "Input TRUE if you want bot to autoupdate its about with current time and date.",
       "value": "FALSE",
@@ -129,12 +123,12 @@
 },
  "STICKER_AUTHOR": {
       "description": "Input sticker data for author",
-       "value": "𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓",
+       "value": "𝑰𝒔𝒉𝒂𝒒 𝑰𝒃𝒓𝒂𝒉𝒊𝒎",
       "required": false
 },
  "STICKER_PACKNAME": {
       "description": "Input sticker data for packname",
-      "value": "𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓",
+      "value": "𝐋𝐨𝐬𝐭𝐁𝐨𝐲",
       "required": false
 },
  "GPT_INBOX": {
@@ -146,9 +140,6 @@
       "description": "Input either VIDEO, LINK or IMAGE. This will allow bot to display different dynamic menu types",
       "value": "IMAGE",
       "required": false
-
-    
-    
     },
     "AUTOLIKE_STATUS": {
       "description": "input TRUE if you want bot to autolike status updates. This will only work if autostatus view is TRUE",
@@ -167,4 +158,4 @@
       "url": "https://github.com/heroku/heroku-buildpack-activestorage-preview"
     }
   ]
-    }
+}
