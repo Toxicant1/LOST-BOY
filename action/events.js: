@@ -1,1 +1,66 @@
+const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
+const botname = process.env.BOTNAME || '𝑳𝑶𝑺𝑻 𝑩𝑶𝒀';
+const ownerName = '𝓘𝓼𝓱𝓪𝓺 𝓘𝓫𝓻𝓪𝓱𝓲𝓶';
 
+const Events = async (client, Nick) => {
+  try {
+    const metadata = await client.groupMetadata(Nick.id);
+    const participants = Nick.participants;
+    const groupName = metadata.subject || "this group";
+    const groupDesc = metadata.desc || "No description available.";
+    const groupMembersCount = metadata.participants.length;
+
+    for (const num of participants) {
+      let dpuser;
+      try {
+        dpuser = await client.profilePictureUrl(num, 'image');
+      } catch {
+        dpuser = 'https://files.catbox.moe/s5nuh3.jpg';
+      }
+
+      const userTag = `@${num.split("@")[0]}`;
+
+      if (Nick.action === 'add') {
+        const welcomeText = `${userTag} Holla👋,
+
+Welcome to *${groupName}* 👥
+
+📌 ${groupDesc}
+
+🔖 We are now *${groupMembersCount}* members.
+
+⚠️ Kindly read group rules and description. Avoid spamming or you might get kicked 😶‍🌫️
+
+🤖 *${botname}* powered by *${ownerName}* 2025`;
+
+        if (welcomegoodbye === 'TRUE') {
+          await client.sendMessage(Nick.id, {
+            image: { url: dpuser },
+            caption: welcomeText,
+            mentions: [num]
+          });
+        }
+
+      } else if (Nick.action === 'remove') {
+        const goodbyeText = `${userTag} just left the chat 😔
+
+Goodbye and take care. We hope to see you again sometime.
+
+🤖 *${botname}* — managed by *${ownerName}* 2025`;
+
+        if (welcomegoodbye === 'TRUE') {
+          await client.sendMessage(Nick.id, {
+            image: { url: dpuser },
+            caption: goodbyeText,
+            mentions: [num]
+          });
+        }
+      }
+    }
+
+  } catch (err) {
+    console.error('Events.js error:', err);
+  }
+};
+
+module.exports = Events;
