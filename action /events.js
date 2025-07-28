@@ -1,50 +1,50 @@
-Const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
-const botname = process.env.BOTNAME || '𝑳𝑶𝑺𝑻 𝑩𝑶𝒀'; // Changed to "LOST BOY" using the same Unicode style as the original botname
-const ownerName = '𝓘𝓼𝓱𝓪𝓺 𝓘𝓫𝓻𝓪𝓱𝓲𝓶'; // Keeping Ishaq Ibrahim with the "script" Unicode style
+// action/events.js
+
+const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
+const botname = process.env.BOTNAME || '𝑳𝑶𝑺𝑻 𝑩𝑶𝒀'; // Default: LOST BOY
+const ownerName = '𝓘𝓼𝓱𝓪𝓺 𝓘𝓫𝓻𝓪𝓱𝓲𝓶'; // Your name stylized
 
 const Events = async (client, Nick) => {
-
     try {
-        let metadata = await client.groupMetadata(Nick.id);
-        let participants = Nick.participants;
-        let desc = metadata.desc || "No Description";
-        let groupMembersCount = metadata.participants.length;
+        const metadata = await client.groupMetadata(Nick.id);
+        const participants = Nick.participants;
 
-        for (let num of participants) {
+        for (const num of participants) {
             let dpuser;
 
             try {
                 dpuser = await client.profilePictureUrl(num, "image");
             } catch {
-                dpuser = "https://files.catbox.moe/s5nuh3.jpg";
+                dpuser = "https://files.catbox.moe/s5nuh3.jpg"; // fallback image
             }
 
             if (Nick.action === "add") {
-                let userName = num;
+                const username = num.split("@")[0];
+                const welcomeText = `@${username} 👋 Holla!\n\nWelcome to *${metadata.subject}*.\n\n📜 Be sure to check the group rules and description.\n🚫 Respect others to avoid being removed.\n\n🤖 ${botname} | 👑 ${ownerName}`;
 
-                let Welcometext = `@${userName.split("@")[0]} Holla👋,\n\nWelcome to ${metadata.subject}.\n\nYou might want to read group description,\nFollow group rules to avoid being removed.\n\n ${botname} owned by ${ownerName} 2025.`;
-                if (welcomegoodbye === 'TRUE') {
+                if (welcomegoodbye.toUpperCase() === 'TRUE') {
                     await client.sendMessage(Nick.id, {
                         image: { url: dpuser },
-                        caption: Welcometext,
-                        mentions: [num],
-                        });
-                }
-            } else if (Nick.action === "remove") {
-                let userName2 = num;
-
-                let Lefttext = `@${userName2.split("@")[0]} Goodbye we shall miss you😔.\n\nAnyway Goodbye .\n\n${botname} owned by ${ownerName}.`;
-                if (welcomegoodbye === 'TRUE') {
-                    await client.sendMessage(Nick.id, {
-                        image: { url: dpuser },
-                        caption: Lefttext,
+                        caption: welcomeText,
                         mentions: [num],
                     });
                 }
-               }
-              }
-             } catch (err) {
-        console.log(err);
+
+            } else if (Nick.action === "remove") {
+                const username = num.split("@")[0];
+                const goodbyeText = `@${username} 😔 Just left the group.\n\nAll the best out there.\n\n🤖 ${botname} | 👑 ${ownerName}`;
+
+                if (welcomegoodbye.toUpperCase() === 'TRUE') {
+                    await client.sendMessage(Nick.id, {
+                        image: { url: dpuser },
+                        caption: goodbyeText,
+                        mentions: [num],
+                    });
+                }
+            }
+        }
+    } catch (err) {
+        console.error("⚠️ Error in Events Handler:", err);
     }
 };
 
