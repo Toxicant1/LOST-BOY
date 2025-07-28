@@ -1,0 +1,64 @@
+// action/events.js
+
+const { GroupSettingChange } = require('../lib/functions');
+
+module.exports = async function EventsHandler(client, m, store) {
+  try {
+    if (!m) return;
+
+    // Auto read message
+    if (m.key && m.key.remoteJid) {
+      await client.readMessages([m.key]);
+    }
+
+    // Logging received messages (you can remove this in production)
+    if (m.message) {
+      const msgType = Object.keys(m.message)[0];
+      console.log(`[📩] Message Type: ${msgType} | From: ${m.key.remoteJid}`);
+    }
+
+    // Welcome / Goodbye message handling
+    client.ev.on('group-participants.update', async (update) => {
+      try {
+        const metadata = await client.groupMetadata(update.id);
+        for (const user of update.participants) {
+          if (update.action === 'add') {
+            await client.sendMessage(update.id, {
+              text: `👋 Karibu sana <@${user.split("@")[0]}> kwa *${metadata.subject}*!`,
+              mentions: [user],
+            });
+          } else if (update.action === 'remove') {
+            await client.sendMessage(update.id, {
+              text: `😢 <@${user.split("@")[0]}> ametoka *${metadata.subject}*...`,
+              mentions: [user],
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Group Participant Event Error:", err);
+      }
+    });
+
+    // Group settings changes
+    client.ev.on('groups.update', async (groups) => {
+      for (const group of groups) {
+        if (group.announce !== undefined) {
+          await client.sendMessage(group.id, {
+            text: group.announce
+              ? '🔒 Group locked by admin. Only admins can send messages.'
+              : '🔓 Group unlocked. Everyone can send messages now!',
+          });
+        }
+        if (group.restrict !== undefined) {
+          await client.sendMessage(group.id, {
+            text: group.restrict
+              ? '🛠️ Group settings are now restricted to admins only.'
+              : '🌐 All members can now change group settings.',
+          });
+        }
+      }
+    });
+  } catch (err) {
+    console.error("❌ Error in EventsHandler:", err);
+  }
+};
