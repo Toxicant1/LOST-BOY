@@ -1,66 +1,50 @@
-const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
-const botname = process.env.BOTNAME || '𝑳𝑶𝑺𝑻 𝑩𝑶𝒀';
-const ownerName = '𝓘𝓼𝓱𝓪𝓺 𝓘𝓫𝓻𝓪𝓱𝓲𝓶';
+const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE'; 
+const botname = process.env.BOTNAME || '𝑩𝑳𝑨𝑪𝑲 𝑩𝑬𝑳𝑻𝑨𝑯 𝑩𝑶𝑻';
 
 const Events = async (client, Nick) => {
-  try {
-    const metadata = await client.groupMetadata(Nick.id);
-    const participants = Nick.participants;
-    const groupName = metadata.subject || "this group";
-    const groupDesc = metadata.desc || "No description available.";
-    const groupMembersCount = metadata.participants.length;
 
-    for (const num of participants) {
-      let dpuser;
-      try {
-        dpuser = await client.profilePictureUrl(num, 'image');
-      } catch {
-        dpuser = 'https://files.catbox.moe/s5nuh3.jpg';
-      }
+    try {
+        let metadata = await client.groupMetadata(Nick.id);
+        let participants = Nick.participants;
+        let desc = metadata.desc || "No Description";
+        let groupMembersCount = metadata.participants.length;
 
-      const userTag = `@${num.split("@")[0]}`;
+        for (let num of participants) {
+            let dpuser;
 
-      if (Nick.action === 'add') {
-        const welcomeText = `${userTag} Holla👋,
+            try {
+                dpuser = await client.profilePictureUrl(num, "image");
+            } catch {
+                dpuser = "https://files.catbox.moe/s5nuh3.jpg";
+            }
 
-Welcome to *${groupName}* 👥
+            if (Nick.action === "add") {
+                let userName = num;
 
-📌 ${groupDesc}
+                let Welcometext = `@${userName.split("@")[0]} Holla👋,\n\nWelcome to ${metadata.subject}.\n\nYou might want to read group description,\nFollow group rules to avoid being removed.\n\n ${botname} 2025.`;
+                if (welcomegoodbye === 'TRUE') {
+                    await client.sendMessage(Nick.id, {
+                        image: { url: dpuser },
+                        caption: Welcometext,
+                        mentions: [num],
+                        });
+                }
+            } else if (Nick.action === "remove") {
+                let userName2 = num;
 
-🔖 We are now *${groupMembersCount}* members.
-
-⚠️ Kindly read group rules and description. Avoid spamming or you might get kicked 😶‍🌫️
-
-🤖 *${botname}* powered by *${ownerName}* 2025`;
-
-        if (welcomegoodbye === 'TRUE') {
-          await client.sendMessage(Nick.id, {
-            image: { url: dpuser },
-            caption: welcomeText,
-            mentions: [num]
-          });
-        }
-
-      } else if (Nick.action === 'remove') {
-        const goodbyeText = `${userTag} just left the chat 😔
-
-Goodbye and take care. We hope to see you again sometime.
-
-🤖 *${botname}* — managed by *${ownerName}* 2025`;
-
-        if (welcomegoodbye === 'TRUE') {
-          await client.sendMessage(Nick.id, {
-            image: { url: dpuser },
-            caption: goodbyeText,
-            mentions: [num]
-          });
-        }
-      }
+                let Lefttext = `@${userName2.split("@")[0]} Goodbye we shall miss you😔.\n\nAnyway Goodbye .`;
+                if (welcomegoodbye === 'TRUE') {
+                    await client.sendMessage(Nick.id, {
+                        image: { url: dpuser },
+                        caption: Lefttext,
+                        mentions: [num],
+                    });
+                }
+               }
+              }
+             } catch (err) {
+        console.log(err);
     }
-
-  } catch (err) {
-    console.error('Events.js error:', err);
-  }
 };
 
 module.exports = Events;
