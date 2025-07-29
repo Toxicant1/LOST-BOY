@@ -23,7 +23,7 @@ const Events = async (client, Nick) => {
       if (Nick.action === 'add') {
         const welcomeText = `
 🔥 ${username} ameingia base! 🔥
-Karibu *${groupName}* 🎭 — tunawanga 24/7!
+Karibu *${groupName}* 🎭 — tunakuwanga 24/7!
 👥 Sasa tuko *${memberCount} deep*.
 
 📝 *Group Bio:* ${groupDesc}
