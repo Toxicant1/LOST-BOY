@@ -2,51 +2,64 @@ const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
 const botname = process.env.BOTNAME || '⚡ 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞 ⚡';
 
 const Events = async (client, Nick) => {
-    try {
-        const metadata = await client.groupMetadata(Nick.id);
-        const participants = Nick.participants;
-        const groupName = metadata.subject || 'Unnamed Group';
-        const groupDesc = metadata.desc || 'No Description';
-        const memberCount = metadata.participants.length;
+  try {
+    const metadata = await client.groupMetadata(Nick.id);
+    const participants = Nick.participants;
+    const groupName = metadata.subject || 'Unnamed Group';
+    const groupDesc = metadata.desc || 'No Description';
+    const memberCount = metadata.participants.length;
 
-        for (const num of participants) {
-            let dpUser;
+    for (const num of participants) {
+      let dpUser;
 
-            try {
-                dpUser = await client.profilePictureUrl(num, 'image');
-            } catch {
-                dpUser = 'https://files.catbox.moe/s5nuh3.jpg';
-            }
+      try {
+        dpUser = await client.profilePictureUrl(num, 'image');
+      } catch {
+        dpUser = 'https://files.catbox.moe/s5nuh3.jpg'; // fallback pic
+      }
 
-            const username = `@${num.split('@')[0]}`;
+      const username = `@${num.split('@')[0]}`;
 
-            if (Nick.action === 'add') {
-                const welcomeText = `${username} Holla 👋,\n\nWelcome to *${groupName}* 🏡\n\n📌 Be sure to read the group description\n📎 ${groupDesc}\n🛡️ Respect the rules to avoid being kicked!\n\n🤖 Powered by *${botname}* 2025`;
+      if (Nick.action === 'add') {
+        const welcomeText = `
+🔥 ${username} ameingia base! 🔥
+Karibu *${groupName}* 🎭 — tunawanga 24/7!
+👥 Sasa tuko *${memberCount} deep*.
 
-                if (welcomegoodbye === 'TRUE') {
-                    await client.sendMessage(Nick.id, {
-                        image: { url: dpUser },
-                        caption: welcomeText,
-                        mentions: [num]
-                    });
-                }
+📝 *Group Bio:* ${groupDesc}
+⚠️ Usijifanye admin, hapa tunajua face 😎
 
-            } else if (Nick.action === 'remove') {
-                const goodbyeText = `${username} just left 🚪\n\n😔 We'll miss you. Goodbye!\n\n— *${botname}*`;
+        `;
 
-                if (welcomegoodbye === 'TRUE') {
-                    await client.sendMessage(Nick.id, {
-                        image: { url: dpUser },
-                        caption: goodbyeText,
-                        mentions: [num]
-                    });
-                }
-            }
+        if (welcomegoodbye === 'TRUE') {
+          await client.sendMessage(Nick.id, {
+            image: { url: dpUser },
+            caption: welcomeText,
+            mentions: [num],
+          });
         }
 
-    } catch (err) {
-        console.error('⚠️ Events error:', err);
+      } else if (Nick.action === 'remove') {
+        const goodbyeText = `
+💨 ${username} ametoka kwa group...
+Hakua na loyalty basi 😤
+
+👋🏾 Bye! Tutasema ulikua legend ama snitch? 
+~ _${botname}_
+        `;
+
+        if (welcomegoodbye === 'TRUE') {
+          await client.sendMessage(Nick.id, {
+            image: { url: dpUser },
+            caption: goodbyeText,
+            mentions: [num],
+          });
+        }
+      }
     }
+  } catch (err) {
+    console.error('⚠️ Events error:', err);
+  }
 };
 
 module.exports = Events;
