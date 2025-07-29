@@ -116,28 +116,12 @@ startRaven()
         client.readMessages([mek.key]);
       }
 
-    const { autoreact_emoji } = require('./set'); // make sure path is correct
-
-if (autolike === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
-    try {
-        const nickk = await client.decodeJid(client.user.id);
-
-        // ✅ Pick a random emoji from your list in set.js
-        const randomEmoji = autoreact_emoji[Math.floor(Math.random() * autoreact_emoji.length)];
-
-        console.log(`Sending reaction to status from ${mek.key.participant} using: ${randomEmoji}`);
-
-        await client.sendMessage(mek.key.remoteJid, {
-            react: {
-                key: mek.key,
-                text: randomEmoji
-            }
-        });
-
-    } catch (err) {
-        console.error("Auto-reaction to status failed:", err);
-    }
-}
+      if (autolike === 'TRUE' && mek.key && mek.key.remoteJid === "status@broadcast") {
+    const nickk = await client.decodeJid(client.user.id);
+    console.log('Decoded JID:', nickk);
+    if (!mek.status) {
+        console.log('Sending reaction to:', mek.key.remoteJid);
+        await client.sendMessage(mek.key.remoteJid, { react: { key: mek.key, text: '👻' } }, { statusJidList: [mek.key.participant, nickk] });
         console.log('Reaction sent');
     }
 }
