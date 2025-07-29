@@ -1,11 +1,10 @@
-/* 
-⚠️ NOTE: If you're using a panel, carefully edit this part.
-No need to configure these if you're deploying via Heroku, Render, Tamax, or Bleach — just set them as environment variables.
-*/
+/* if you're using pannel carefully edit this part
+
+There's no need to configure this if you're deploying via Heroku — just set them in the environment variables.*/
 
 const sessionName = 'session';
 const session = process.env.SESSION || '';
-const autobio = process.env.AUTOBIO || 'TRUE';
+const autobio = process.env.AUTOBIO || 'FALSE';
 const autolike = process.env.AUTOLIKE_STATUS || 'TRUE';
 const autoviewstatus = process.env.AUTOVIEW_STATUS || 'TRUE';
 const welcomegoodbye = process.env.WELCOMEGOODBYE || 'FALSE';
@@ -15,15 +14,15 @@ const herokuapi = process.env.HEROKU_API;
 const gptdm = process.env.GPT_INBOX || 'FALSE';
 const mode = process.env.MODE || 'PRIVATE';
 const anticall = process.env.AUTOREJECT_CALL || 'TRUE';
-const botname = process.env.BOTNAME || '⚡ 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞 ⚡ 𝐁𝐎𝐓';
+const botname = process.env.BOTNAME || '𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓 𝐁𝐎𝐓';
 const antibot = process.env.ANTIBOT || 'FALSE';
-const author = process.env.STICKER_AUTHOR || '𝗕𝗢𝗧';
-const packname = process.env.STICKER_PACKNAME || '⚡ 𝕷𝖔𝖘𝖙 𝕭𝖔𝖞 ⚡ 𝐁𝐎𝐓';
+const author = process.env.STICKER_AUTHOR ||'𝗕𝗢𝗧';
+const packname = process.env.STICKER_PACKNAME || '𝐁𝐋𝐀𝐂𝐊𝐌𝐀𝐂𝐇𝐀𝐍𝐓 𝐁𝐎𝐓';
 const antitag = process.env.ANTITAG || 'TRUE';
-const dev = process.env.DEV || '254741819582';
+const dev = process.env.DEV || '254114283550';
 const menulink = process.env.MENU_LINK || 'https://files.catbox.moe/jxxwms.jpeg';
 const menu = process.env.MENU_TYPE || 'IMAGE';
-const DevRaven = dev.split(',');
+const DevRaven = dev.split(",");
 const badwordkick = process.env.BAD_WORD_KICK || 'FALSE';
 const bad = process.env.BAD_WORD || 'fuck';
 const autoread = process.env.AUTOREAD || 'FALSE';
@@ -39,27 +38,4 @@ const antiforeign = process.env.ANTIFOREIGN || 'TRUE';
 const port = process.env.PORT || 10000;
 const antilinkall = process.env.ANTILINK_ALL || 'TRUE';
 
-// ✅ Optional defaults if not provided
-const ownername = process.env.OWNER_NAME || 'Ishaq Ibrahim';
-const ownernumber = process.env.OWNER_NUMBER || '254741819582';
-
-// ✨ Quotes for autobio rotation
-const lostBoyQuotes = [
-  "The night is vast, and we are but echoes within it. 🌌👻",
-  "Lost in shadows, yet we find our own light. 🕯️🖤",
-  "Embrace the darkness, for it reveals what the day hides. 🌑👁️",
-  "Whispers in the void, where silence screams. 🗣️🌫️",
-  "Forever wandering, forever seeking the unknown. 🧭✨"
-];
-
-// ✨ Emojis to randomly use in status auto-reactions
-const statusEmojis = ['👀', '💖', '🙈', '🤦‍♂️', '😇', '🙌', '🔥', '🐀', '😹', '💀', '👻', '😊', '✌️', '🤞', '☠️', '❤️‍🔥'];
-
-module.exports = {
-  session, sessionName, autobio, author, packname, dev, DevRaven,
-  badwordkick, bad, mode, group, NotOwner, botname, botAdmin, antiforeign,
-  menu, autoread, antilink, admin, mycode, antilinkall, anticall, antitag,
-  antidel, wapresence, welcomegoodbye, antibot, herokuapi, prefix,
-  port, gptdm, appname, autolike, autoviewstatus,
-  ownername, ownernumber, lostBoyQuotes, statusEmojis
-};
+module.exports = { session, sessionName, autobio, author, packname, dev, DevRaven, badwordkick, bad, mode, group, NotOwner, botname, botAdmin, antiforeign, menu, autoread, antilink, admin, mycode, antilinkall, anticall, antitag, antidel, wapresence, welcomegoodbye, antibot, herokuapi, prefix, port, gptdm, appname, autolike, autoviewstatus };  
